@@ -8,7 +8,10 @@ import pypokerengine.engine.action_checker as Action
 import random
 from treys import Card, Deck, Evaluator
 
-import state-builder
+from state_builder import StateBuilder
+from obs_builder import ObsBuilder
+from game_manager import GameManager
+from reward import Reward
 
 class PokerGymEnv(gym.Env):
     def __init__(self, num_players=7):
@@ -30,6 +33,12 @@ class PokerGymEnv(gym.Env):
         self.buy_in = 100
         self.total_chips = self.buy_in * self.num_players
         self.render_mode = "human"
+
+        self.state_builder = StateBuilder()
+        self.obs_builder = ObsBuilder()
+        self.game_manager = GameManager()
+        #idk about rewards
+        self.reward = Reward()
 
     def reset(self, seed=None):
         print("         * * * * * * * *")
