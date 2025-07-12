@@ -37,6 +37,8 @@ class GameManager():
 
         return self.game_state, self.events
 
+
+    #Returns board as string from game_state
     def get_board(self):
         board = []
         board_obj = self.game_state['table'].get_community_card()
@@ -45,6 +47,7 @@ class GameManager():
             board.append(card.__str__())
         return self.format_cards(board)        
         
+    #Reverses cards from game engine notation and creates treys card object
     def format_cards(self, cards):
         new_cards = []
         for card in cards:
@@ -53,9 +56,11 @@ class GameManager():
 
         return new_cards
     
+    #Takes game engine cards, creates treys object, returns pretty string
     def get_pretty(self, cards):
         return Card.ints_to_pretty_str(self.format_cards(cards))
 
+    #Returns array of all players cards as trey object
     def get_cards(self):
         all_cards = []
         for player in self.game_state['table'].seats.players:
@@ -67,6 +72,7 @@ class GameManager():
 
         return all_cards
     
+    #returns array of all players still active in hand cards as trey object
     def get_active_players_cards(self):
         all_cards = []
         for player in self.get_active_players():
@@ -79,6 +85,7 @@ class GameManager():
 
         return all_cards        
     
+    #Takes player object and returns cards as trey object
     def get_players_cards(self, player):
         if player != None:
             cards = []
@@ -88,6 +95,7 @@ class GameManager():
         else:
             return None
 
+    #Takes game_state street number and returns string
     def get_street(self):
         if self.game_state["street"] == 0:
             return "PREFLOP"        
@@ -102,9 +110,11 @@ class GameManager():
         elif self.game_state["street"] == 5:
             return "FINISHED"
 
+    #returns player object from uuid. Doesnt chekc for vaild uuid
     def get_player(self, uuid):
         return self.game_state['table'].seats.players[uuid - 1]
 
+    #returns array of active player objects currently in hand
     def get_active_players(self):
         active_players = []
         for player in self.game_state['table'].seats.players:
@@ -113,14 +123,17 @@ class GameManager():
                 
         return active_players
     
+    #returns table object from game_state
     def get_table(self):
         return self.game_state['table']
         
+    #Returns active player from game_state
     def get_current_player(self):
         if self.game_state["next_player"] != "not_found":
             return self.get_player(self.game_state["next_player"])
         else:
             return None
         
+    #returns total chips on table
     def get_total_chips(self):
         return self.total_chips
