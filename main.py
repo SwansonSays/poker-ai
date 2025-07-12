@@ -8,6 +8,8 @@ import pypokerengine.engine.action_checker as Action
 import random
 from treys import Card, Deck, Evaluator
 
+import state-builder
+
 class PokerGymEnv(gym.Env):
     def __init__(self, num_players=7):
         super(PokerGymEnv, self).__init__()
@@ -147,9 +149,6 @@ class PokerGymEnv(gym.Env):
                           "on board", Card.ints_to_pretty_str(self.get_board()), "\n")
         
 
-    
-    
-    
 
 # Create the environment
 env = PokerGymEnv()
