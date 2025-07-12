@@ -6,12 +6,8 @@ class ObsBuilder():
         self.state = None
         
 
-    def create_initial_state(self):
-        self.game_state, self.events = self.game_manager.create_game()
-        return self._get_state(self.game_state, self.events)
-
     # Take game state and build Observation
-    def _get_state(self, game_state, events):
+    def build_observation(self, game_state, events):
 
         # 1. Encode active players Hole cards
         # 2. Encode board

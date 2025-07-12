@@ -37,18 +37,18 @@ class PokerGymEnv(gym.Env):
         print("         *  NEW GAME!  *")
         print("         * * * * * * * *","\n")
 
-        # 1. Game manager to create game and returns init game state
-        # 2. Obs builder takes game state and builds obs
-        # 3. Return observation
+        # Game manager to create game and returns init game state
+        game_state, events = self.game_manager.create_game()
+        
+        # Obs builder takes game state and builds obs
+        observation = self.obs_builder.build_observation(game_state, events)
 
-        self.state = self.state_builder.create_initial_state()
-
-        print(self.state)
-
+        # Set Render mode
         if self.render_mode == "human":
             self.render()
 
-        return self.state, {}
+        # Return observation
+        return observation, {}
 
     def step(self, action):
 
