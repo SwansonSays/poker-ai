@@ -14,8 +14,9 @@ class GameManager():
         self.events = None
         self.buy_in = 100
         self.total_chips = self.buy_in * self.num_players
-        self.state_builder = StateBuilder()
 
+
+    # Create new game and return initial game state
     def create_game(self):
         print("         * * * * * * * *")
         print("         *  NEW GAME!  *")
@@ -37,6 +38,10 @@ class GameManager():
         self.game_state, self.events = self.emulator.start_new_round(initial_state)
 
         return self.game_state, self.events
+    
+    # Check Winners
+    # Generate possible actions for current game state
+    # Take decoded action and return new game state
 
 
     #Returns board as string from game_state

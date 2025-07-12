@@ -37,6 +37,10 @@ class PokerGymEnv(gym.Env):
         print("         *  NEW GAME!  *")
         print("         * * * * * * * *","\n")
 
+        # 1. Game manager to create game and returns init game state
+        # 2. Obs builder takes game state and builds obs
+        # 3. Return observation
+
         self.state = self.state_builder.create_initial_state()
 
         print(self.state)
@@ -48,14 +52,15 @@ class PokerGymEnv(gym.Env):
 
     def step(self, action):
 
-        # 1. Check Winners
-        # 2. Get possible actions based off of current state
-        # 3. Decode the action and amount based off possible actions
-        # 4. Calculate the Reward
-        # 5. Take action
+        # 1. Check Winners -> Game Manager
+        # 2. Get possible actions based off of current game state -> Game Manager
+        # 3. Decode the action and amount based off possible actions -> Obs Builder?
+        # 4. Calculate the Reward -> Reward
+        # 5. Take action -> Game Manager
         # 6. Check Winners?
-        # 7. Get new State from the action applied
-        # 8. Return new state and reward and flag
+        # 7. Get new game state from the action applied -> Game Manager
+        # 8. Build Observation from Game State -> Obs Builder
+        # 8. Return new Obs and reward and flag 
 
 
 

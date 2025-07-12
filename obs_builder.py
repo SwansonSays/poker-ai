@@ -10,7 +10,18 @@ class ObsBuilder():
         self.game_state, self.events = self.game_manager.create_game()
         return self._get_state(self.game_state, self.events)
 
+    # Take game state and build Observation
     def _get_state(self, game_state, events):
+
+        # 1. Encode active players Hole cards
+        # 2. Encode board
+        # 3. Encode current street
+        # 4. Normalize the pot
+        # 5. Normalize each players chips and encode whether they are active in hand
+        # 6. Encode active player
+        # 7. Encode previous actions
+        # 8. Add all encodings to arr
+        # 9. Return Observation
 
         print("GET STATE")
         print(game_state)
@@ -176,6 +187,8 @@ class ObsBuilder():
         #print("NORMALIZE", bet)
         return bet / self.total_chips
     
+
+    # Decode action and return
     def scale_bet(self, action, call_amount, min_bet, max_bet):
         #print(self.emulator.generate_possible_actions(self.game_state))
         #print(action, call_amount, min_bet, max_bet)
