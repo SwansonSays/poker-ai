@@ -3,6 +3,10 @@
 
 ### dotenv ###
 .env
+poker-env
+
+### scratch-dir ###
+scratch-dir
 
 ### Python ###
 # Byte-compiled / optimized / DLL files
