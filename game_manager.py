@@ -121,3 +121,6 @@ class GameManager():
             return self.get_player(self.game_state["next_player"])
         else:
             return None
+        
+    def get_total_chips(self):
+        return self.total_chips

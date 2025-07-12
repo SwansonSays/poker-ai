@@ -9,8 +9,6 @@ import random
 from treys import Card, Deck, Evaluator
 
 from state_builder import StateBuilder
-from obs_builder import ObsBuilder
-from game_manager import GameManager
 from reward import Reward
 
 class PokerGymEnv(gym.Env):
@@ -27,9 +25,7 @@ class PokerGymEnv(gym.Env):
 
         self.render_mode = "human"
 
-        self.game_manager = GameManager(num_players)
         self.state_builder = StateBuilder()
-        self.obs_builder = ObsBuilder()
         
         #idk about rewards
         self.reward = Reward()
@@ -39,11 +35,7 @@ class PokerGymEnv(gym.Env):
         print("         *  NEW GAME!  *")
         print("         * * * * * * * *","\n")
 
-
-        #print(self.game_state['table']._blind_pos)
-        #print(self.game_state['table'].dealer_btn)
-        self.game_state, self.events = self.game_manager.create_game()
-        self.state = self.state_builder._get_state(self.game_state, self.events)
+        self.state = self.state_builder.create_initial_state()
 
         print(self.state)
 

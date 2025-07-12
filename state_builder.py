@@ -1,10 +1,19 @@
 import numpy as np
+from game_manager import GameManager
 
 class StateBuilder():
     def __init__(self):
-        pass
+        self.state = None
+        self.game_manager = GameManager(7) #need to figure out how to get num players from trainer init
+
+    def create_initial_state(self):
+        self.game_state, self.events = self.game_manager.create_game()
+        return self._get_state(self.game_state, self.events)
 
     def _get_state(self, game_state, events):
+
+        print("GET STATE")
+        print(game_state)
 
         """Encode Hole Cards"""
         #print("ERROR: ", game_state['next_player'])
