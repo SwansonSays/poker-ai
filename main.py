@@ -8,7 +8,8 @@ import pypokerengine.engine.action_checker as Action
 import random
 from treys import Card, Deck, Evaluator
 
-from state_builder import StateBuilder
+from obs_builder import ObsBuilder
+from game_manager import GameManager
 from reward import Reward
 
 class PokerGymEnv(gym.Env):
@@ -25,7 +26,8 @@ class PokerGymEnv(gym.Env):
 
         self.render_mode = "human"
 
-        self.state_builder = StateBuilder()
+        self.obs_builder = ObsBuilder()
+        self.game_manager = GameManager(num_players)
         
         #idk about rewards
         self.reward = Reward()

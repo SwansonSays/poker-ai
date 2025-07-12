@@ -14,6 +14,7 @@ class GameManager():
         self.events = None
         self.buy_in = 100
         self.total_chips = self.buy_in * self.num_players
+        self.state_builder = StateBuilder()
 
     def create_game(self):
         print("         * * * * * * * *")

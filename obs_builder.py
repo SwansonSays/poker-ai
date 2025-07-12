@@ -1,10 +1,10 @@
 import numpy as np
 from game_manager import GameManager
 
-class StateBuilder():
+class ObsBuilder():
     def __init__(self):
         self.state = None
-        self.game_manager = GameManager(7) #need to figure out how to get num players from trainer init
+        
 
     def create_initial_state(self):
         self.game_state, self.events = self.game_manager.create_game()
@@ -21,11 +21,13 @@ class StateBuilder():
         #print(events[0]["type"])
         if(game_state["next_player"] != "not_found"):
             hole_cards_obj = game_state["table"].seats.players[game_state["next_player"]].hole_card
+            print(hole_cards_obj)
             hole_cards = []
             for card in hole_cards_obj:
                 hole_cards.append(card.__str__())
         else:
             hole_cards = ["CN", "CN"]
+        print(hole_cards)
         
         normalized_hole_cards = self.normalize_cards(hole_cards)
 
