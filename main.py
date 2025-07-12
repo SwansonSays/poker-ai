@@ -23,20 +23,14 @@ class PokerGymEnv(gym.Env):
         # Define observation space (agent's hand, community cards, stack sizes)
         self.observation_space = spaces.Box(low=0, high=1, shape=(831,), dtype=np.float32)
 
-        # Set up the number of players
-        self.num_players = num_players
-        self.players = [BasePokerPlayer() for _ in range(self.num_players)]  # Placeholder players
         self.state = None
-        self.emulator = None
-        self.game_state = None
-        self.events = None
-        self.buy_in = 100
-        self.total_chips = self.buy_in * self.num_players
+
         self.render_mode = "human"
 
+        self.game_manager = GameManager(num_players)
         self.state_builder = StateBuilder()
         self.obs_builder = ObsBuilder()
-        self.game_manager = GameManager()
+        
         #idk about rewards
         self.reward = Reward()
 
@@ -45,27 +39,13 @@ class PokerGymEnv(gym.Env):
         print("         *  NEW GAME!  *")
         print("         * * * * * * * *","\n")
 
-        self.emulator = Emulator()
-        self.emulator.set_game_rule(player_num=7, max_round=10, small_blind_amount=5, ante_amount=0)
-        players_info = {
-            "1": { "name": "player1", "stack": self.buy_in },
-            "2": { "name": "player2", "stack": self.buy_in },
-            "3": { "name": "player3", "stack": self.buy_in },
-            "4": { "name": "player4", "stack": self.buy_in },
-            "5": { "name": "player5", "stack": self.buy_in },
-            "6": { "name": "player6", "stack": self.buy_in },
-            "7": { "name": "player7", "stack": self.buy_in }
-        }
-
-        initial_state = self.emulator.generate_initial_game_state(players_info)
-        self.game_state, self.events = self.emulator.start_new_round(initial_state)
 
         #print(self.game_state['table']._blind_pos)
         #print(self.game_state['table'].dealer_btn)
+        self.game_state, self.events = self.game_manager.create_game()
+        self.state = self.state_builder._get_state(self.game_state, self.events)
 
-
-
-        self.state = self._get_state(self.game_state, self.events)
+        print(self.state)
 
         if self.render_mode == "human":
             self.render()
