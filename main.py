@@ -45,7 +45,18 @@ class PokerGymEnv(gym.Env):
         return self.state, {}
 
     def step(self, action):
-        
+
+        # 1. Check Winners
+        # 2. Get possible actions based off of current state
+        # 3. Decode the action and amount based off possible actions
+        # 4. Calculate the Reward
+        # 5. Take action
+        # 6. Check Winners?
+        # 7. Get new State from the action applied
+        # 8. Return new state and reward and flag
+
+
+
         #print(self.events[0]["type"])
         #Reset on hand win
         for event in self.events:
