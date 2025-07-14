@@ -41,11 +41,13 @@ class GameManager():
     
     # Check Winners
     def check_winners(self):
+        print("CHECK", len(self.events))
         for event in self.events:
-            if "winners" in event:
+            print(event["type"])
+            if event["type"] == "event_round_finish":
+                print("WINNNER WINNER WINNER !!!!!!")
                 return True            
-            else: 
-                return False
+        return False
             
     # Generate possible actions for current game state
     def get_possible_actions(self):
@@ -159,3 +161,6 @@ class GameManager():
     #returns total chips on table
     def get_total_chips(self):
         return self.total_chips
+    
+    def get_num_players(self):
+        return self.num_players
