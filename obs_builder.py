@@ -10,7 +10,7 @@ class ObsBuilder():
         return self.scale_bet(action, possible_actions[1]["amount"], possible_actions[-1]["amount"]["min"], possible_actions[-1]["amount"]["max"])
 
     # Take game state and build Observation
-    def build_observation(self, game_state, events):
+    def build_observation(self, game_state, events, total_chips):
 
         # 1. Encode active players Hole cards
         #       check that it is someones turn
@@ -88,14 +88,14 @@ class ObsBuilder():
 
 
         """Normalize Pot"""
-        normalized_pot = round_state["pot"]["main"]['amount'] / self.total_chips
+        normalized_pot = round_state["pot"]["main"]['amount'] / total_chips
 
         """Normalize Stacks / Encode Player Status"""
         player_status = [0] * self.num_players * 3
         i = 0
         for player in round_state["seats"]:
             player_status[i] = int(player["uuid"]) / self.num_players
-            player_status[i + 1] = player["stack"] / self.total_chips
+            player_status[i + 1] = player["stack"] / total_chips
             if player['state'] == 'participating':
                 player_status[i + 2] = 1
             else:
@@ -129,7 +129,7 @@ class ObsBuilder():
                         self.normalize_street(street),
                         int(action["uuid"]) / self.num_players, 
                         self.normalize_action(action["action"]),
-                        self.normalize_bet(action["amount"])
+                        self.normalize_bet(action["amount"], total_chips)
                     ]
                 #print("160: ", full_action)
 
@@ -207,9 +207,9 @@ class ObsBuilder():
 
         return action / 4
     
-    def normalize_bet(self, bet):
+    def normalize_bet(self, bet, total_chips):
         #print("NORMALIZE", bet)
-        return bet / self.total_chips
+        return bet / total_chips
     
 
     # Decode action and return

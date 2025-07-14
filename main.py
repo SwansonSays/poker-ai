@@ -68,7 +68,7 @@ class PokerGymEnv(gym.Env):
         else:
             done = False
         # 7. Build Observation from Game State -> Obs Builder
-        observation = self.obs_builder.build_observation(game_state, events)
+        observation = self.obs_builder.build_observation(game_state, events, self.game_manager.get_total_chips())
         # 8. Render step
         if self.render_mode == "human":
             self.render(action_name, amount, reward)
