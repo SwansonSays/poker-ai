@@ -29,38 +29,58 @@ class PokerGymEnv(gym.Env):
         self.reward = Reward()
 
     def reset(self, seed=None):
-        print("         * * * * * * * *")
-        print("         *  NEW GAME!  *")
-        print("         * * * * * * * *","\n")
+        print("START RESET")
 
         # Game manager to create game and returns init game state
         game_state, events = self.game_manager.create_game()
+
+        print("!! Game State !!")
+        print(game_state)
+        print("!! Events !!")
+        #print(events)
+        #print("!")
+        self.print_events(events)
         
         # Obs builder takes game state and builds obs
-        observation = self.obs_builder.build_observation(game_state, events)
+        observation = self.obs_builder.build_observation(game_state, events, self.game_manager.get_total_chips(), self.game_manager.get_num_players())
 
         # Set Render mode
         if self.render_mode == "human":
-            self.render()
+            #self.render()
+            pass
 
+
+        print("END RESET")
         # Return observation
         return observation, {}
 
     def step(self, action):
+        print("START STEP")
         # 1. Check Winners -> Game Manager
         if(self.game_manager.check_winners()):
+            print("WINEER WINNNER WINNER @@@@@")
             done = True
             self.reset()
         else:
+            print("NO WINNER")
             done = False
         # 2. Get possible actions based off of current game state -> Game Manager
         possible_actions = self.game_manager.get_possible_actions()
         # 3. Decode the action and amount based off possible actions -> Obs Builder?
         action_name, amount = self.obs_builder.decode_action(action, possible_actions)
         # 4. Calculate the Reward -> Reward
-        reward = self.reward.calculate_reward(action_name)
+        #reward = self.reward.calculate_reward(action_name)
+        reward = 0
         # 5. Take action -> Game Manager
         game_state, events = self.game_manager.take_action(action_name, amount)
+        print("!! Game State !!")
+        print(game_state)
+        print("!! Events !!")
+        #print(events)
+        self.print_events(events)
+        print("!! ACTION !!")
+        self.print_action(action_name, amount)
+        
         # 6. Check Winners?
         if(self.game_manager.check_winners()):
             done = True
@@ -68,14 +88,16 @@ class PokerGymEnv(gym.Env):
         else:
             done = False
         # 7. Build Observation from Game State -> Obs Builder
-        observation = self.obs_builder.build_observation(game_state, events, self.game_manager.get_total_chips())
+        observation = self.obs_builder.build_observation(game_state, events, self.game_manager.get_total_chips(), self.game_manager.get_num_players())
         # 8. Render step
         if self.render_mode == "human":
-            self.render(action_name, amount, reward)
+            #self.render(action_name, amount, reward)
+            pass
         # 8. Return new Obs and reward and flag 
+        print("END STEP")
         return observation, reward, done, False, {}
 
-    def render(self, action='none', amount='none', reward='none', mode='human'):
+    def render(self, action='none', amount='none', reward='none', mode='human'):  
         if(self.events[0]["type"] == "event_new_street"):
             print("*******************************************")
             
@@ -117,6 +139,56 @@ class PokerGymEnv(gym.Env):
                           "wins ", event["round_state"]["pot"]["main"]["amount"],
                           "with", Card.ints_to_pretty_str(self.get_players_cards(winner)), 
                           "on board", Card.ints_to_pretty_str(self.get_board()), "\n")
+                    
+
+    def print_events(self, events):
+        length = len(events)
+
+        for event in events:
+            if(event["type"] == "event_round_finish"):
+                print("Winner:", event["winners"])
+                print("Pot:", event["round_state"]["pot"]["main"]["amount"])
+                print("Board:", event["round_state"]["community_card"])
+                for seat in event["round_state"]["seats"]:
+                    print(seat)
+                return
+
+        if(length == 0):
+            print("EVENT ERR")
+        elif(length == 1):
+            #print(events)
+            print("Event: ", events[0]["type"])
+            print("Street: ",events[0]["round_state"]["street"])
+            print("Board:", events[0]["round_state"]["community_card"])
+            print("Pot: ", events[0]["round_state"]["pot"]["main"]["amount"])
+            print("Active Player: ", events[0]["uuid"])
+            print("Valid Actions:")
+            for action in events[0]["valid_actions"]:
+                print(action)
+            print("Table:")
+            for seat in events[0]["round_state"]["seats"]:
+                print(seat)
+        elif(length == 2):
+            print("Event: ",events[0]["type"])
+            print("Street: ",events[0]["street"])
+            print("Pot: ", events[0]["round_state"]["pot"]["main"]["amount"])
+            print("")
+            print("Event: ", events[1]["type"])
+            print("Street: ",events[0]["street"])
+            print("Board:", events[1]["round_state"]["community_card"])
+            print("Pot: ", events[0]["round_state"]["pot"]["main"]["amount"])
+            print("Active Player: ", events[1]["uuid"])
+            print("Valid Actions")
+            for action in events[1]["valid_actions"]:
+                print(action)
+            print("Table")
+            for seat in events[1]["round_state"]["seats"]:
+                print(seat)
+        else:
+            print("!@! EVENT LENGTH", length, "!@!")
+
+    def print_action(self, action, amount):
+        print("Action:", action, "Amount:", amount)
         
 
 
