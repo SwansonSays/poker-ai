@@ -29,16 +29,14 @@ class PokerGymEnv(gym.Env):
         self.reward = Reward()
 
     def reset(self, seed=None):
-        print("START RESET")
+        print("*START RESET*")
 
         # Game manager to create game and returns init game state
         game_state, events = self.game_manager.create_game()
 
-        print("!! Game State !!")
-        print(game_state)
+        #print("!! Game State !!")
+        #print(game_state)
         print("!! Events !!")
-        #print(events)
-        #print("!")
         self.print_events(events)
         
         # Obs builder takes game state and builds obs
@@ -50,15 +48,14 @@ class PokerGymEnv(gym.Env):
             pass
 
 
-        print("END RESET")
+        print("*END RESET*")
         # Return observation
         return observation, {}
 
     def step(self, action):
-        print("START STEP")
+        print("*START STEP*")
         # 1. Check Winners -> Game Manager
         if(self.game_manager.check_winners()):
-            print("WINEER WINNNER WINNER @@@@@")
             done = True
             self.reset()
         else:
@@ -73,20 +70,14 @@ class PokerGymEnv(gym.Env):
         reward = 0
         # 5. Take action -> Game Manager
         game_state, events = self.game_manager.take_action(action_name, amount)
-        print("!! Game State !!")
-        print(game_state)
+        #print("!! Game State !!")
+        #print(game_state)
+        print("!! ACTION !!")
+        self.print_action(action_name, amount)
         print("!! Events !!")
         #print(events)
         self.print_events(events)
-        print("!! ACTION !!")
-        self.print_action(action_name, amount)
-        
-        # 6. Check Winners?
-        if(self.game_manager.check_winners()):
-            done = True
-            self.reset()
-        else:
-            done = False
+
         # 7. Build Observation from Game State -> Obs Builder
         observation = self.obs_builder.build_observation(game_state, events, self.game_manager.get_total_chips(), self.game_manager.get_num_players())
         # 8. Render step
@@ -94,7 +85,7 @@ class PokerGymEnv(gym.Env):
             #self.render(action_name, amount, reward)
             pass
         # 8. Return new Obs and reward and flag 
-        print("END STEP")
+        print("*END STEP*")
         return observation, reward, done, False, {}
 
     def render(self, action='none', amount='none', reward='none', mode='human'):  
@@ -156,7 +147,6 @@ class PokerGymEnv(gym.Env):
         if(length == 0):
             print("EVENT ERR")
         elif(length == 1):
-            #print(events)
             print("Event: ", events[0]["type"])
             print("Street: ",events[0]["round_state"]["street"])
             print("Board:", events[0]["round_state"]["community_card"])

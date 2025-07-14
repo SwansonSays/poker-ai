@@ -41,11 +41,11 @@ class GameManager():
     
     # Check Winners
     def check_winners(self):
-        print("CHECK", len(self.events))
+        #print("CHECK", len(self.events))
         for event in self.events:
-            print(event["type"])
+            #print(event["type"])
             if event["type"] == "event_round_finish":
-                print("WINNNER WINNER WINNER !!!!!!")
+                #print("WINNNER WINNER WINNER !!!!!!")
                 return True            
         return False
             
