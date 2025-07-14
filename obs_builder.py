@@ -10,7 +10,7 @@ class ObsBuilder():
         return self.scale_bet(action, possible_actions[1]["amount"], possible_actions[-1]["amount"]["min"], possible_actions[-1]["amount"]["max"])
 
     # Take game state and build Observation
-    def build_observation(self, game_state, events, total_chips):
+    def build_observation(self, game_state, events, total_chips, num_players):
 
         # 1. Encode active players Hole cards
         #       check that it is someones turn
@@ -47,8 +47,8 @@ class ObsBuilder():
         # 8. Add all encodings to arr
         # 9. Return Observation
 
-        print("GET STATE")
-        print(game_state)
+        #print("GET STATE")
+        #print(game_state)
 
         """Encode Hole Cards"""
         #print("ERROR: ", game_state['next_player'])
@@ -56,13 +56,13 @@ class ObsBuilder():
         #print(events[0]["type"])
         if(game_state["next_player"] != "not_found"):
             hole_cards_obj = game_state["table"].seats.players[game_state["next_player"]].hole_card
-            print(hole_cards_obj)
+            #print(hole_cards_obj)
             hole_cards = []
             for card in hole_cards_obj:
                 hole_cards.append(card.__str__())
         else:
             hole_cards = ["CN", "CN"]
-        print(hole_cards)
+        #print(hole_cards)
         
         normalized_hole_cards = self.normalize_cards(hole_cards)
 
@@ -91,10 +91,10 @@ class ObsBuilder():
         normalized_pot = round_state["pot"]["main"]['amount'] / total_chips
 
         """Normalize Stacks / Encode Player Status"""
-        player_status = [0] * self.num_players * 3
+        player_status = [0] * num_players * 3
         i = 0
         for player in round_state["seats"]:
-            player_status[i] = int(player["uuid"]) / self.num_players
+            player_status[i] = int(player["uuid"]) / num_players
             player_status[i + 1] = player["stack"] / total_chips
             if player['state'] == 'participating':
                 player_status[i + 2] = 1
@@ -104,7 +104,7 @@ class ObsBuilder():
 
         """Encode Current Player"""
         if(game_state["next_player"] != "not_found"):
-            current_player = round_state['next_player'] / self.num_players
+            current_player = round_state['next_player'] / num_players
         else:
             current_player = 0
 
@@ -118,7 +118,7 @@ class ObsBuilder():
                     #print("IF")
                     full_action = [
                         self.normalize_street(street),
-                        int(action["uuid"]) / self.num_players, 
+                        int(action["uuid"]) / num_players, 
                         self.normalize_action(action["action"]),
                         0
                     ]
@@ -127,7 +127,7 @@ class ObsBuilder():
                     #print(action)
                     full_action = [
                         self.normalize_street(street),
-                        int(action["uuid"]) / self.num_players, 
+                        int(action["uuid"]) / num_players, 
                         self.normalize_action(action["action"]),
                         self.normalize_bet(action["amount"], total_chips)
                     ]
