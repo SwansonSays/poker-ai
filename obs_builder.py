@@ -6,6 +6,9 @@ class ObsBuilder():
         self.state = None
         
 
+    def decode_action(self, action, possible_actions):
+        return self.scale_bet(action, possible_actions[1]["amount"], possible_actions[-1]["amount"]["min"], possible_actions[-1]["amount"]["max"])
+
     # Take game state and build Observation
     def build_observation(self, game_state, events):
 

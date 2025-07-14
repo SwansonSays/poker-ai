@@ -40,9 +40,21 @@ class GameManager():
         return self.game_state, self.events
     
     # Check Winners
+    def check_winners(self):
+        for event in self.events:
+            if "winners" in event:
+                return True            
+            else: 
+                return False
+            
     # Generate possible actions for current game state
-    # Take decoded action and return new game state
-
+    def get_possible_actions(self):
+        return self.emulator.generate_possible_actions(self.game_state)
+    
+    # Take decoded action and update game state
+    def take_action(self, action_name, amount):
+        self.game_state, self.events = self.emulator.apply_action(self.game_state, action_name, amount)
+        return self.game_state, self.events
 
     #Returns board as string from game_state
     def get_board(self):
@@ -51,7 +63,7 @@ class GameManager():
 
         for card in board_obj:
             board.append(card.__str__())
-        return self.format_cards(board)        
+        return self.format_cards(board)     
         
     #Reverses cards from game engine notation and creates treys card object
     def format_cards(self, cards):

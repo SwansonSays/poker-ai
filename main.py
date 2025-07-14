@@ -22,14 +22,10 @@ class PokerGymEnv(gym.Env):
         # Define observation space (agent's hand, community cards, stack sizes)
         self.observation_space = spaces.Box(low=0, high=1, shape=(831,), dtype=np.float32)
 
-        self.state = None
-
         self.render_mode = "human"
 
         self.obs_builder = ObsBuilder()
         self.game_manager = GameManager(num_players)
-        
-        #idk about rewards
         self.reward = Reward()
 
     def reset(self, seed=None):
@@ -51,58 +47,33 @@ class PokerGymEnv(gym.Env):
         return observation, {}
 
     def step(self, action):
-
         # 1. Check Winners -> Game Manager
-        # 2. Get possible actions based off of current game state -> Game Manager
-        # 3. Decode the action and amount based off possible actions -> Obs Builder?
-        # 4. Calculate the Reward -> Reward
-        # 5. Take action -> Game Manager
-        # 6. Check Winners?
-        # 7. Get new game state from the action applied -> Game Manager
-        # 8. Build Observation from Game State -> Obs Builder
-        # 8. Return new Obs and reward and flag 
-
-
-
-        #print(self.events[0]["type"])
-        #Reset on hand win
-        for event in self.events:
-            if "winners" in event:
-                done = True
-                #print(event["winners"][0]["stack"])
-                self.reset()             
-            else: 
-                done = False
-                
-        #transalte action based on possible actions
-        possible_actions = self.emulator.generate_possible_actions(self.game_state)
-        print(possible_actions)
-        action_name, amount = self.scale_bet(action, possible_actions[1]["amount"], possible_actions[-1]["amount"]["min"], possible_actions[-1]["amount"]["max"])
-        print(action_name, amount)
-        #print("Player: ", self.game_state["next_player"], action_name, amount)
-        #print("POT: ", self.events[0]["round_state"]["pot"]["main"]['amount'])
-
-        reward = self.calculate_reward(action_name)
-
-        #take action
-        self.game_state, self.events = self.emulator.apply_action(self.game_state, action_name, amount)
-
-        # Check if the game is over
-        #I think this is redundent now
-        if (self.events[0]['type'] == 'event_round_finish'):
+        if(self.game_manager.check_winners()):
             done = True
+            self.reset()
         else:
             done = False
-
-        # Get the updated state
-        self.state = self._get_state(self.game_state, self.events)
-
-        #print(f"Reward: {reward}")
-
+        # 2. Get possible actions based off of current game state -> Game Manager
+        possible_actions = self.game_manager.get_possible_actions()
+        # 3. Decode the action and amount based off possible actions -> Obs Builder?
+        action_name, amount = self.obs_builder.decode_action(action, possible_actions)
+        # 4. Calculate the Reward -> Reward
+        reward = self.reward.calculate_reward(action_name)
+        # 5. Take action -> Game Manager
+        game_state, events = self.game_manager.take_action(action_name, amount)
+        # 6. Check Winners?
+        if(self.game_manager.check_winners()):
+            done = True
+            self.reset()
+        else:
+            done = False
+        # 7. Build Observation from Game State -> Obs Builder
+        observation = self.obs_builder.build_observation(game_state, events)
+        # 8. Render step
         if self.render_mode == "human":
             self.render(action_name, amount, reward)
-
-        return self.state, reward, done, False, {}
+        # 8. Return new Obs and reward and flag 
+        return observation, reward, done, False, {}
 
     def render(self, action='none', amount='none', reward='none', mode='human'):
         if(self.events[0]["type"] == "event_new_street"):
