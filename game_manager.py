@@ -55,11 +55,15 @@ class GameManager():
     def take_action(self, action_name, amount):
         self.game_state, self.events = self.emulator.apply_action(self.game_state, action_name, amount)
         return self.game_state, self.events
+    
+
+    def get_board_obj(self):
+        return self.game_state['table'].get_community_card()
 
     #Returns board as string from game_state
     def get_board(self):
         board = []
-        board_obj = self.game_state['table'].get_community_card()
+        board_obj = self.get_board_obj()
 
         for card in board_obj:
             board.append(card.__str__())
@@ -79,7 +83,7 @@ class GameManager():
         return Card.ints_to_pretty_str(self.format_cards(cards))
 
     #Returns array of all players cards as trey object
-    def get_cards(self):
+    def get_all_cards(self):
         all_cards = []
         for player in self.game_state['table'].seats.players:
             hole_cards = []
