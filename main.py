@@ -77,7 +77,12 @@ class PokerGymEnv(gym.Env):
         print("!! Events !!")
         #print(events)
         self.print_events(events)
-
+        if(self.game_manager.check_winners()):
+            done = True
+            self.reset()
+        else:
+            print("NO WINNER")
+            done = False
         # 7. Build Observation from Game State -> Obs Builder
         observation = self.obs_builder.build_observation(game_state, events, self.game_manager.get_total_chips(), self.game_manager.get_num_players())
         # 8. Render step
