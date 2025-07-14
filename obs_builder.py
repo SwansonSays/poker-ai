@@ -13,12 +13,37 @@ class ObsBuilder():
     def build_observation(self, game_state, events):
 
         # 1. Encode active players Hole cards
+        #       check that it is someones turn
+        #       get active player
+        #           get hole cards
+        #           convert to hole cards obj to str
+        #       encode hole cards str
         # 2. Encode board
+        #       get board
+        #           convert board obj to str
+        #       fill empty spaces with CN
+        #       encode board
         # 3. Encode current street
-        # 4. Normalize the pot
+        #       get street
+        #       encode street
+        # 4. Encode the pot
+        #       get pot
+        #       encode pot
         # 5. Normalize each players chips and encode whether they are active in hand
+        #       get all players
+        #       get players uuid
+        #       get players stack
+        #       get total amount of chips
+        #       get players status
         # 6. Encode active player
-        # 7. Encode previous actions
+        #       check that it is someones turn
+        #       get current player
+        # 7. Encode previous actions (should i really encode every previous action taken every round or build the previous action arr for each round as it goes)
+        #       get previous actions
+        #       encode street
+        #       encode player
+        #       encode action
+        #       encode bet
         # 8. Add all encodings to arr
         # 9. Return Observation
 
@@ -123,7 +148,7 @@ class ObsBuilder():
         print(np.array(previous_actions).flatten())
         """
         
-        state = np.concatenate([
+        observation = np.concatenate([
             np.array(normalized_hole_cards).flatten(),
             np.array(normalized_board).flatten(),
             [normalized_street],
@@ -137,7 +162,7 @@ class ObsBuilder():
         print(len(state))
         """
 
-        return state
+        return observation
     
     def normalize_cards(self, cards):
         card_encoding = []
